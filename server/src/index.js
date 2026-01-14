@@ -27,7 +27,8 @@ const io = new Server(httpServer, {
     cors: {
         origin: ALLOWED_ORIGINS,
         methods: ['GET', 'POST']
-    }
+    },
+    maxHttpBufferSize: 1e7 // Increase to 10MB for flower images
 });
 
 // Middleware

@@ -220,7 +220,19 @@ export class FlowerDrawer {
         }
 
         outputCtx.putImageData(outputData, 0, 0);
-        return outputCanvas.toDataURL('image/png');
+
+        // Resize to 128x128 for optimized network transmission (rendering size is 32x32)
+        const resizedCanvas = document.createElement('canvas');
+        resizedCanvas.width = 128;
+        resizedCanvas.height = 128;
+        const resizedCtx = resizedCanvas.getContext('2d');
+
+        // High quality scaling
+        resizedCtx.imageSmoothingEnabled = true;
+        resizedCtx.imageSmoothingQuality = 'high';
+        resizedCtx.drawImage(outputCanvas, 0, 0, this.canvas.width, this.canvas.height, 0, 0, 128, 128);
+
+        return resizedCanvas.toDataURL('image/png');
     }
 
     /**
