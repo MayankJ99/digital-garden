@@ -18,7 +18,8 @@ const httpServer = createServer(app);
 const ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
-    'https://digital-garden.vercel.app',      // Your Vercel domain
+    'https://digital-garden.vercel.app',
+    'https://digital-garden-rust-two.vercel.app',      // Your Vercel domain
     /\.vercel\.app$/                           // Any Vercel preview deploy
 ];
 
@@ -48,8 +49,10 @@ setupSocketHandlers(io);
 
 // Start server
 const PORT = process.env.PORT || 3000;
-httpServer.listen(PORT, () => {
-    console.log(`🌸 Digital Garden server running on port ${PORT}`);
+const HOST = '0.0.0.0'; // Required for Railway/Docker
+
+httpServer.listen(PORT, HOST, () => {
+    console.log(`🌸 Digital Garden server running on ${HOST}:${PORT}`);
 });
 
 export { app, io };
