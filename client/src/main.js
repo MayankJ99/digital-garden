@@ -64,12 +64,20 @@ function setupNetworkCallbacks() {
     socketClient.onPlayersUpdate = (players) => {
         for (const player of players) {
             game.updateRemotePlayer(player);
+            // Create cat for remote player if they have one
+            if (player.cat) {
+                game.updateRemotePlayerCat(player.id, player.cat);
+            }
         }
         updatePlayerCount();
     };
 
     socketClient.onPlayerJoin = (player) => {
         game.updateRemotePlayer(player);
+        // Create cat for remote player if they have one
+        if (player.cat) {
+            game.updateRemotePlayerCat(player.id, player.cat);
+        }
         updatePlayerCount();
     };
 
@@ -92,6 +100,11 @@ function setupNetworkCallbacks() {
 
     socketClient.onPlayerCountChange = (count) => {
         updatePlayerCount(count);
+    };
+
+    // Cat sync - when another player updates their cat
+    socketClient.onPlayerCatUpdate = (playerId, catData) => {
+        game.updateRemotePlayerCat(playerId, catData);
     };
 }
 
@@ -150,13 +163,14 @@ async function startGame() {
         game.adoptCat(catData.type, catData.name);
     }
 
-    // Connect to server
+    // Connect to server with cat data
     try {
         await socketClient.connect({
             id: playerId,
             nickname: nickname,
             x: game.localPlayer.x,
-            y: game.localPlayer.y
+            y: game.localPlayer.y,
+            cat: catData  // Send cat data on join
         });
 
         // Request existing flowers
@@ -187,6 +201,8 @@ function setupUI() {
     catSelector = new CatSelector((catType, catName) => {
         game.adoptCat(catType, catName);
         setCatData(catType, catName);
+        // Sync cat to server
+        socketClient.sendCatUpdate({ type: catType, name: catName });
     });
 
     // Action buttons

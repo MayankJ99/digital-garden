@@ -864,13 +864,24 @@ export class GameMap {
         for (const flower of this.flowers) {
             const screenPos = camera.worldToScreen(flower.x, flower.y);
 
-            if (flower.image && flower.image.complete) {
-                // Draw with slight transparency for blending
-                ctx.globalAlpha = 0.95;
-                ctx.drawImage(flower.image, screenPos.x - 16, screenPos.y - 16, 32, 32);
-                ctx.globalAlpha = 1;
+            // Check if within view (optimization)
+            if (screenPos.x < -32 || screenPos.x > camera.width + 32 ||
+                screenPos.y < -32 || screenPos.y > camera.height + 32) {
+                continue;
+            }
+
+            if (flower.image) {
+                if (flower.image.complete && flower.image.naturalWidth > 0) {
+                    // Draw with slight transparency for blending
+                    ctx.globalAlpha = 0.95;
+                    ctx.drawImage(flower.image, screenPos.x - 16, screenPos.y - 16, 32, 32);
+                    ctx.globalAlpha = 1;
+                }
             } else if (flower.imageData) {
                 const img = new Image();
+                img.onload = () => {
+                    // Force a redraw or just let the next frame handle it
+                };
                 img.src = flower.imageData;
                 flower.image = img;
             }

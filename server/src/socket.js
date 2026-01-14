@@ -26,23 +26,37 @@ export function setupSocketHandlers(io) {
                 x: data.x || 0,
                 y: data.y || 0,
                 direction: 0,
-                isMoving: false
+                isMoving: false,
+                cat: data.cat || null  // Cat data: { type, name }
             };
 
             players.set(data.id, currentPlayer);
 
-            // Send current players to the new player
+            // Send current players (with their cats) to the new player
             const currentPlayers = Array.from(players.values())
                 .filter(p => p.id !== data.id);
             socket.emit('players:current', currentPlayers);
 
-            // Notify other players about the new player
+            // Notify other players about the new player (with cat)
             socket.broadcast.emit('player:joined', currentPlayer);
 
             // Send player count
             io.emit('player:count', players.size);
 
-            console.log(`Player joined: ${data.nickname} (${data.id})`);
+            console.log(`Player joined: ${data.nickname} (${data.id})${data.cat ? ' with cat ' + data.cat.name : ''}`);
+        });
+
+        // Player updates their cat
+        socket.on('player:cat', (catData) => {
+            if (currentPlayer) {
+                currentPlayer.cat = catData;
+                // Broadcast cat update to all other players
+                socket.broadcast.emit('player:cat:updated', {
+                    playerId: currentPlayer.id,
+                    cat: catData
+                });
+                console.log(`${currentPlayer.nickname} adopted cat: ${catData?.name || 'none'}`);
+            }
         });
 
         // Player movement

@@ -27,6 +27,7 @@ export class Engine {
         // Entities
         this.localPlayer = null;
         this.remotePlayers = new Map();
+        this.remoteCats = new Map();  // Cats belonging to remote players
         this.cat = null;
 
         // Input state
@@ -187,6 +188,22 @@ export class Engine {
      */
     removeRemotePlayer(id) {
         this.remotePlayers.delete(id);
+        this.remoteCats.delete(id);  // Also remove their cat
+    }
+
+    /**
+     * Update or create a remote player's cat
+     */
+    updateRemotePlayerCat(playerId, catData) {
+        const player = this.remotePlayers.get(playerId);
+        if (player && catData) {
+            // Create a cat that follows this remote player
+            const cat = new Cat(catData.type, catData.name, player);
+            this.remoteCats.set(playerId, cat);
+            console.log(`Remote player ${playerId} has cat: ${catData.name}`);
+        } else if (!catData) {
+            this.remoteCats.delete(playerId);
+        }
     }
 
     /**
@@ -312,6 +329,11 @@ export class Engine {
         for (const player of this.remotePlayers.values()) {
             player.update(deltaTime, null);
         }
+
+        // Update remote cats
+        for (const cat of this.remoteCats.values()) {
+            cat.update(deltaTime);
+        }
     }
 
     /**
@@ -338,6 +360,11 @@ export class Engine {
         // Render cat
         if (this.cat) {
             this.cat.render(this.ctx, this.camera);
+        }
+
+        // Render remote cats
+        for (const cat of this.remoteCats.values()) {
+            cat.render(this.ctx, this.camera);
         }
 
         // Render flower placement indicator

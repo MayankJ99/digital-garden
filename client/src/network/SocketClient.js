@@ -23,6 +23,7 @@ export class SocketClient {
         this.onFlowerPlaced = null;
         this.onFlowersLoad = null;
         this.onPlayerCountChange = null;
+        this.onPlayerCatUpdate = null;  // New: cat sync callback
     }
 
     /**
@@ -108,6 +109,14 @@ export class SocketClient {
                         this.onPlayerCountChange(count);
                     }
                 });
+
+                // Cat sync events
+                this.socket.on('player:cat:updated', (data) => {
+                    console.log('Player cat updated:', data);
+                    if (this.onPlayerCatUpdate) {
+                        this.onPlayerCatUpdate(data.playerId, data.cat);
+                    }
+                });
             } catch (error) {
                 reject(error);
             }
@@ -149,6 +158,15 @@ export class SocketClient {
     requestFlowers() {
         if (this.connected && this.socket) {
             this.socket.emit('flowers:get');
+        }
+    }
+
+    /**
+     * Send cat update to server
+     */
+    sendCatUpdate(catData) {
+        if (this.connected && this.socket) {
+            this.socket.emit('player:cat', catData);
         }
     }
 
