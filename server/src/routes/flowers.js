@@ -38,6 +38,8 @@ export async function getAllFlowers() {
  * Create a new flower
  */
 export async function createFlower(flowerData) {
+    console.log('Creating flower with data size:', flowerData.imageData?.length);
+
     const flower = {
         id: crypto.randomUUID(),
         x: flowerData.x,
@@ -48,11 +50,13 @@ export async function createFlower(flowerData) {
     };
 
     if (!isSupabaseConfigured()) {
+        console.warn('Supabase NOT configured, using in-memory storage');
         inMemoryFlowers.push(flower);
         return flower;
     }
 
     try {
+        console.log('Attempting to insert flower into Supabase...');
         const supabase = getSupabase();
         const { data, error } = await supabase
             .from('flowers')
@@ -60,10 +64,15 @@ export async function createFlower(flowerData) {
             .select()
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase INSERT error:', error);
+            throw error;
+        }
+
+        console.log('Flower inserted successfully:', data?.id);
         return data;
     } catch (error) {
-        console.error('Error creating flower:', error);
+        console.error('Error creating flower in DB:', error);
         // Fallback to in-memory
         inMemoryFlowers.push(flower);
         return flower;
