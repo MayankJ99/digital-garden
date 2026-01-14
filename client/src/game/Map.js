@@ -880,10 +880,22 @@ export class GameMap {
             } else if (flower.imageData) {
                 const img = new Image();
                 img.onload = () => {
-                    // Force a redraw or just let the next frame handle it
+                    console.log('Flower image loaded successfully', flower.id);
+                };
+                img.onerror = (e) => {
+                    console.error('Failed to load flower image', flower.id, e);
+                    // Mark as broken to stop retrying
+                    flower.isBroken = true;
                 };
                 img.src = flower.imageData;
                 flower.image = img;
+            } else if (flower.isBroken) {
+                // Render placeholder for broken flowers
+                ctx.fillStyle = 'red';
+                ctx.fillRect(screenPos.x - 10, screenPos.y - 10, 20, 20);
+                ctx.font = '10px monospace';
+                ctx.fillStyle = 'white';
+                ctx.fillText('?', screenPos.x - 3, screenPos.y + 3);
             }
         }
     }
