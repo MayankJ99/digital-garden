@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="A multiplayer 8-bit pixel art digital garden where you can plant flowers and adopt cats">
+  <title>Digital Garden 🌸</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div id="player-info">
+        <span id="nickname-display">Guest</span>
+      </div>
+      <div id="action-buttons">
+        <button id="btn-flower" title="Plant Flower (F)">🌸</button>
+        <button id="btn-cat" title="Adopt Cat (C)">🐱</button>
+        <button id="btn-audio" title="Toggle Music (M)">🔊</button>
+      </div>
+      <div id="online-count">
+        <span id="player-count">1</span> online
+      </div>
+    </div>
+
+    <!-- Nickname Modal -->
+    <div id="nickname-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Welcome to Digital Garden!</h2>
+        <p>Enter your nickname:</p>
+        <input type="text" id="nickname-input" maxlength="16" placeholder="Your name...">
+        <button id="nickname-submit" class="btn-primary">Enter Garden</button>
+      </div>
+    </div>
+
+    <!-- Flower Drawing Modal -->
+    <div id="flower-modal" class="modal hidden">
+      <div class="modal-content modal-large">
+        <h2>Draw Your Flower 🌸</h2>
+        <p>Draw a flower to plant in the garden!</p>
+        <div id="drawing-area">
+          <canvas id="drawing-canvas" width="200" height="200"></canvas>
+          <div id="color-palette">
+            <button class="color-btn" data-color="#FF6B6B" style="background:#FF6B6B"></button>
+            <button class="color-btn" data-color="#FF8E53" style="background:#FF8E53"></button>
+            <button class="color-btn" data-color="#FFCD69" style="background:#FFCD69"></button>
+            <button class="color-btn" data-color="#95E77E" style="background:#95E77E"></button>
+            <button class="color-btn" data-color="#69D2E7" style="background:#69D2E7"></button>
+            <button class="color-btn" data-color="#A78BFA" style="background:#A78BFA"></button>
+            <button class="color-btn" data-color="#F472B6" style="background:#F472B6"></button>
+            <button class="color-btn" data-color="#FFFFFF" style="background:#FFFFFF"></button>
+          </div>
+          <div id="brush-size">
+            <label>Brush: </label>
+            <input type="range" id="brush-slider" min="3" max="20" value="8">
+          </div>
+        </div>
+        <div id="filter-status"></div>
+        <div class="modal-buttons">
+          <button id="clear-drawing" class="btn-secondary">Clear</button>
+          <button id="submit-flower" class="btn-primary">Plant! 🌱</button>
+          <button id="cancel-flower" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cat Selection Modal -->
+    <div id="cat-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Adopt a Cat 🐱</h2>
+        <p>Choose your furry companion:</p>
+        <div id="cat-selection">
+          <div class="cat-option" data-cat="tabby">
+            <div class="cat-preview tabby"></div>
+            <span>Tabby</span>
+          </div>
+          <div class="cat-option" data-cat="black">
+            <div class="cat-preview black"></div>
+            <span>Shadow</span>
+          </div>
+          <div class="cat-option" data-cat="orange">
+            <div class="cat-preview orange"></div>
+            <span>Ginger</span>
+          </div>
+          <div class="cat-option" data-cat="calico">
+            <div class="cat-preview calico"></div>
+            <span>Patches</span>
+          </div>
+          <div class="cat-option" data-cat="siamese">
+            <div class="cat-preview siamese"></div>
+            <span>Cream</span>
+          </div>
+        </div>
+        <div id="cat-name-section" class="hidden">
+          <label>Name your cat:</label>
+          <input type="text" id="cat-name-input" maxlength="12" placeholder="Cat name...">
+        </div>
+        <div class="modal-buttons">
+          <button id="adopt-cat" class="btn-primary hidden">Adopt!</button>
+          <button id="cancel-cat" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+      <div class="loading-content">
+        <div class="pixel-loader"></div>
+        <p>Loading garden...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
