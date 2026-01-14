@@ -367,6 +367,13 @@ export class GameMap {
      * Add a flower to the map
      */
     addFlower(flower) {
+        // Normalize DB snake_case to camelCase
+        if (flower.image_data && !flower.imageData) {
+            flower.imageData = flower.image_data;
+        }
+        if (flower.created_by && !flower.createdBy) {
+            flower.createdBy = flower.created_by;
+        }
         this.flowers.push(flower);
     }
 
