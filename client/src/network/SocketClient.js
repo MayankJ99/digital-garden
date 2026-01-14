@@ -5,6 +5,11 @@
 
 import { io } from 'socket.io-client';
 
+// Production server URL (Railway)
+const SERVER_URL = import.meta.env.PROD
+    ? 'https://digital-garden-production.up.railway.app'
+    : undefined; // Use same origin in development
+
 export class SocketClient {
     constructor() {
         this.socket = null;
@@ -26,7 +31,7 @@ export class SocketClient {
     connect(playerData) {
         return new Promise((resolve, reject) => {
             try {
-                this.socket = io({
+                this.socket = io(SERVER_URL, {
                     transports: ['websocket', 'polling']
                 });
 

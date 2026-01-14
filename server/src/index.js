@@ -13,17 +13,26 @@ import flowerRoutes from './routes/flowers.js';
 
 const app = express();
 const httpServer = createServer(app);
+
+// CORS origins - add your Vercel domain here
+const ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://digital-garden.vercel.app',      // Your Vercel domain
+    /\.vercel\.app$/                           // Any Vercel preview deploy
+];
+
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.NODE_ENV === 'production'
-            ? false
-            : ['http://localhost:5173', 'http://127.0.0.1:5173'],
+        origin: ALLOWED_ORIGINS,
         methods: ['GET', 'POST']
     }
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ALLOWED_ORIGINS
+}));
 app.use(express.json({ limit: '5mb' })); // For flower image data
 
 // Health check
