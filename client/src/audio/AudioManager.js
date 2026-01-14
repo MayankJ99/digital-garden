@@ -4,7 +4,7 @@
  */
 
 // Import the local music file
-import lofiMusic from '../assets/lofi-music.mp3';
+import lofiMusic from '../assets/kitten-404787.mp3';
 
 class AudioManager {
     constructor() {
